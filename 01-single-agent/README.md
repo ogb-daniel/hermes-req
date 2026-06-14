@@ -33,11 +33,11 @@ export OPENROUTER_API_KEY="your-key-here"
 
 ## Usage
 
-# With a topic argument
+### With a topic argument
 
 python agent.py "quantum computing breakthroughs 2025"
 
-# Interactive mode
+### Interactive mode
 
 python agent.py
 
