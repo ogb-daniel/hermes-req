@@ -30,3 +30,17 @@ pip install -r requirements.txt
 # Set your API key
 export OPENROUTER_API_KEY="your-key-here"
 ```
+
+## Usage
+
+# With a topic argument
+
+python agent.py "quantum computing breakthroughs 2025"
+
+# Interactive mode
+
+python agent.py
+
+## Output
+
+The agent saves its research to output/<topic>\_<timestamp>.md.
