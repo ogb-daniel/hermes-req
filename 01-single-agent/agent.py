@@ -62,7 +62,7 @@ def run_research(agent: AIAgent, topic):
     )
     
     print(f"Saved!\n")
-    
+
     print(f"{'═' * 60}")
     print(f"  RESULTS")
     print(f"{'═' * 60}\n")
@@ -72,3 +72,21 @@ def run_research(agent: AIAgent, topic):
     print(f"{'═' * 60}\n")
     return article
 
+def main():
+    if len(sys.argv) > 1:
+        topic = " ".join(sys.argv[1:])
+    else:
+        topic = input("Enter a research topic: ").strip()
+        if not topic:
+            print("Error: Please provide a topic.")
+            sys.exit(1)
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        print("Error: ANTHROPIC_API_KEY environment variable not set.")
+        print("Run: export ANTHROPIC_API_KEY='your-key-here'")
+        sys.exit(1)
+
+    agent = create_agent()
+    run_research(agent, topic)
+
+if __name__ == "__main__":
+    main()
