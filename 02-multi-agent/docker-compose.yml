@@ -4,7 +4,7 @@ services:
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
     volumes:
-      - ./memory:/app/memory
+      - ./mem:/app/mem
       - ./output:/app/output
     stdin_open: true
     tty: true

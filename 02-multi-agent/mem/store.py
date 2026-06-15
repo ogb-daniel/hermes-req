@@ -19,12 +19,11 @@ def save_memory(entries, filepath=DEFAULT_MEMORY_FILE):
     with open(filepath, "w") as f:
         json.dump(entries, f, indent=2, default=str)
 
-def add_memory_entry(topic, research_summary, article_preview, filepath=DEFAULT_MEMORY_FILE):
+def add_memory_entry(topic, summary, filepath=DEFAULT_MEMORY_FILE):
     entries = load_memory(filepath)
     entry = {
          "topic": topic,
-        "research_summary": research_summary[:500],
-        "article_preview": article_preview[:300],
+        "summary": summary,
         "timestamp": datetime.now().isoformat(),
     }
     entries.append(entry)
@@ -36,9 +35,9 @@ def get_memory_context(max_entries=5, filepath=DEFAULT_MEMORY_FILE):
     if not entries:
         return ""
     recent = entries[-max_entries:]
-    lines = ["Previous research sessions:"]
+    lines = ["Previous research sessions:\n"]
     for entry in recent:
-        lines.append(
-            f"- [{entry['timestamp'][:10]}] {entry['topic']}: {entry['research_summary'][:150]}..."
-        )
+        lines.append(f"### {entry['topic']} ({entry['timestamp'][:10]})")
+        lines.append(entry["summary"])
+        lines.append("")
     return "\n".join(lines)

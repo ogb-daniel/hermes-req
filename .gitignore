@@ -41,3 +41,5 @@ wheels/
 .pytest_cache/
 .coverage
 htmlcov/
+
+mem/conversation_log.json

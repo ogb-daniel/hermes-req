@@ -2,7 +2,7 @@ import sys
 import os
 from datetime import datetime
 from run_agent import AIAgent
-from memory.store import get_memory_context, add_memory_entry
+from mem.store import get_memory_context, add_memory_entry
 
 def banner(text):
     width = 60
@@ -15,17 +15,25 @@ def step_log(icon, message):
 
 def create_researcher():
     return AIAgent(
-        model="anthropic/claude-sonnet-4.6",
+        model="nvidia/nemotron-3-super-120b-a12b:free",
         quiet_mode=True,
         enabled_toolsets=["web"],
     )
 
 def create_writer():
     return AIAgent(
-        model="anthropic/claude-sonnet-4.6",
+        model="nvidia/nemotron-3-super-120b-a12b:free",
         quiet_mode=True,
         enabled_toolsets=["file"],
     )
+
+def create_summarizer():
+    return AIAgent(
+        model="nvidia/nemotron-3-super-120b-a12b:free",
+        quiet_mode=True,
+        enabled_toolsets=[],  
+    )
+
 
 def run_workflow(topic):
     banner("MULTI-AGENT WORKFLOW STARTING")
@@ -90,14 +98,46 @@ Make the article informative, well-organized, and ready to publish."""
     step_log("✅", f"Article complete! ({len(article_text)} characters)")
     step_log("💾", f"Saved to: {output_file}")
 
+    banner("SUMMARIZER AGENT STARTING")
+    step_log("🧠", "Creating Summarizer agent (no tools — pure reasoning)...")
+
+    summarizer = create_summarizer()
+
+    summarize_prompt = f"""You are a knowledge management agent. Your job is to distil
+the following research and article into a structured memory entry that will be
+useful for future research sessions on related topics.
+
+## Original Research
+{research_text}
+
+## Written Article
+{article_text}
+
+## Instructions
+Produce a structured summary with:
+1. **Key Findings** — the 3-5 most important facts/insights discovered
+2. **Data Points** — any specific numbers, statistics, dates, or metrics
+3. **Sources** — key sources or references found
+4. **Connections** — how this topic relates to broader themes
+5. **Open Questions** — what wasn't fully answered or needs follow-up
+
+Keep it concise but information-dense. This will be injected into future
+research prompts to avoid re-discovering the same information."""
+
+    step_log("📊", "Summarizer is distilling key insights...")
+    summary_result = summarizer.run_conversation(user_message=summarize_prompt)
+    memory_summary = summary_result["final_response"]
+
+    step_log("✅", f"Summary complete! ({len(memory_summary)} characters)")
+
+
     banner("UPDATING LONG-TERM MEMORY")
     entry = add_memory_entry(
         topic=topic,
-        research_summary=research_text,
-        article_preview=article_text,
+        summary=memory_summary
     )
     step_log("🧠", f"Memory entry added: {entry['topic']}")
-    step_log("📊", f"Total memory entries: {len(__import__('memory.store', fromlist=['load_memory']).load_memory())}")
+    step_log("📊", f"Total memory entries: {len(__import__('mem.store', fromlist=['load_memory']).load_memory())}")
 
     banner("WORKFLOW COMPLETE")
     step_log("📄", f"Article saved to: {output_file}")
@@ -120,9 +160,9 @@ def main():
         if not topic:
             print("Error: Please provide a topic.")
             sys.exit(1)
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("Error: ANTHROPIC_API_KEY environment variable not set.")
-        print("Run: export ANTHROPIC_API_KEY='your-key-here'")
+    if not os.environ.get("OPENROUTER_API_KEY"):
+        print("Error: OPENROUTER_API_KEY environment variable not set.")
+        print("Run: export OPENROUTER_API_KEY='your-key-here'")
         sys.exit(1)
     run_workflow(topic)
 
