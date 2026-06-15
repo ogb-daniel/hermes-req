@@ -2,7 +2,7 @@ services:
   multi-agent:
     build: .
     environment:
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
     volumes:
       - ./mem:/app/mem
       - ./output:/app/output

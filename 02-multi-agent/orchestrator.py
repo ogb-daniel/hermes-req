@@ -52,15 +52,23 @@ def run_workflow(topic):
     banner("RESEARCHER AGENT STARTING")
     step_log("🔬", "Creating Researcher agent (toolsets: [web])...")
     researcher = create_researcher()
-    research_prompt = f"""Research the following topic thoroughly: {topic}
+    research_prompt = f"""You are a research assistant. A user wants to research: {topic}
+Here is your knowledge base from previous research sessions:
+{memory_context}
+
 Search the web for:
 - Recent developments and news
 - Key facts and statistics
 - Expert opinions and analysis
 - Relevant sources and references
-{memory_context}
-Provide comprehensive, detailed findings. Include specific data points and source URLs where possible."""
-    step_log("🔍", "Researcher is searching the web...")
+Provide comprehensive, detailed findings. Include specific data points and source URLs where possible.
+
+Rules:
+- If the knowledge base contains sufficient, relevant information to write 
+  a thorough response, provide that response now.
+- Only search the web if the knowledge base is empty, irrelevant, or lacks enough detail.
+"""
+    step_log("🔍", "Researching...")
     research_result = researcher.run_conversation(user_message=research_prompt)
     research_text = research_result["final_response"]
     step_log("✅", f"Research complete! ({len(research_text)} characters)")
