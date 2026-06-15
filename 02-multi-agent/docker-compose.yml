@@ -1,0 +1,10 @@
+services:
+  multi-agent:
+    build: .
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./memory:/app/memory
+      - ./output:/app/output
+    stdin_open: true
+    tty: true
