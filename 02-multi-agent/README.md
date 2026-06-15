@@ -1,10 +1,10 @@
-# Multi-Agent Workflow: Researcher → Writer
+# Multi-Agent Workflow: Researcher → Writer → Summarizer
 
-A 2-agent collaborative workflow built with [Hermes Agent](https://github.com/NousResearch/hermes-agent) demonstrating agent handoff and long-term memory.
+A 3-agent collaborative workflow built with [Hermes Agent](https://github.com/NousResearch/hermes-agent) demonstrating agent handoff and long-term memory.
 
 ## Architecture
 
-Researcher Agent (web search) → Writer Agent (file writing) ↕ ↕ Long-Term Memory (JSON file, persists across runs)
+Researcher Agent (web search) → Writer Agent (file writing) → Summarizer Agent (summarization) ↕ ↕ Long-Term Memory (JSON file, persists across runs)
 
 ### Agents
 
@@ -12,7 +12,7 @@ Researcher Agent (web search) → Writer Agent (file writing) ↕ ↕ Long-Term 
 | -------------- | -------- | -------------------------------------------------------- |
 | **Researcher** | `web`    | Searches the web for information on the given topic      |
 | **Writer**     | `file`   | Turns research findings into a polished markdown article |
-| **Summarizer** | ``       | Summarizes findings                                      |
+| **Summarizer** |          | Summarizes findings                                      |
 
 ### Handoff
 
@@ -31,7 +31,7 @@ Researcher Agent (web search) → Writer Agent (file writing) ↕ ↕ Long-Term 
 ## Prerequisites
 
 - Python 3.11+
-- An Anthropic API key
+- An Openrouter API key
 - Docker & Docker Compose (for containerised run)
 
 ## Setup
