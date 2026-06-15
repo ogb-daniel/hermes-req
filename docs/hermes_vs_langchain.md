@@ -82,7 +82,7 @@ LangChain requires manual state management:
 
 ### Hermes
 
-- 30+ providers out of the box
+- 20+ providers out of the box
 - Hot-swap at any time with `hermes model`
 - Supports Ollama, vLLM, and OpenAI-compatible endpoints
 - Fallback provider chains
