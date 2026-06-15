@@ -1,0 +1,45 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  setup-models:
+    image: ollama/ollama:latest
+    depends_on:
+      - ollama
+    restart: "no"
+    entrypoint: /bin/sh
+    command: >
+      -c "
+        echo 'Waiting for Ollama to start...' &&
+        sleep 10 &&
+        OLLAMA_HOST=http://ollama:11434 ollama pull llama3.2:3b &&
+        OLLAMA_HOST=http://ollama:11434 ollama pull phi4-mini &&
+        echo 'Models ready!'
+      "
+
+  agent-app:
+    build: .
+    depends_on:
+      setup-models:
+        condition: service_completed_successfully
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+    volumes:
+      - ./output:/app/output
+    stdin_open: true
+    tty: true
+
+volumes:
+  ollama_data:

@@ -10,7 +10,7 @@ ollama pull llama3.2:3b
 
 echo ""
 echo "📦 Pulling Qwen 2.5 7B..."
-ollama pull qwen2.5:7b
+ollama pull phi4-mini
 
 echo ""
 echo "═══════════════════════════════════════════"

@@ -3,22 +3,34 @@ import os
 import time
 from datetime import datetime
 from run_agent import AIAgent
+os.environ["OPENAI_BASE_URL"] = "http://127.0.0"
+os.environ["OPENAI_API_KEY"] = "ollama"
 
 MODELS = {
     "Llama 3.2 3B (Ollama)": {
         "model": "ollama/llama3.2:3b",
-     "provider": "ollama",
-        "requires_key": False,    },
-    "Qwen 2.5 3B (Ollama)": {
-        "model": "ollama/qwen2.5:3b",
-     "provider": "ollama",
-        "requires_key": False,    },
+     "provider": "custom",
+        "requires_key": False,   
+             "base_url":"http://127.0.0.1:11434/v1",
+            "api_key":"ollama",
+         },
+"Phi-4 Mini (Ollama)": {
+    "model": "ollama/phi4-mini",
+    "provider": "custom",
+    "requires_key": False,
+    "base_url": "http://127.0.0.1:11434/v1",
+    "api_key": "ollama",
+},
+
+
     "Nvidia Neomotron 3 Super 120B (OpenRouter)": {
         "model": "nvidia/nemotron-3-super-120b-a12b:free",
 "provider": "openrouter",
         "requires_key": True,    },
 
 }
+
+allowed_keys = {"model", "provider", "base_url", "api_key"}
 
 def banner(text):
     width = 60
@@ -33,9 +45,9 @@ def run_model(model_name, model_config, prompt):
         return None
     try:
         agent = AIAgent(
-            model=model_config["model"],
+            **{k: model_config[k] for k in allowed_keys if k in model_config},
             quiet_mode=True,
-            enabled_toolsets=["web"],  # Pure reasoning — no tools for fair comparison
+            enabled_toolsets=["web"],
         )
         start_time = time.time()
         result = agent.run_conversation(user_message=prompt)
@@ -96,7 +108,7 @@ def main():
     if len(sys.argv) > 1:
         topic = " ".join(sys.argv[1:])
     else:
-        topic = "Explain the key differences between transformer and mamba architectures for language models"
+        topic = input("Enter a topic: ").strip()
     prompt = f"""Research and explain the following topic in detail:
 {topic}
 Provide:
