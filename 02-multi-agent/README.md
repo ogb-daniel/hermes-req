@@ -12,6 +12,7 @@ Researcher Agent (web search) → Writer Agent (file writing) ↕ ↕ Long-Term 
 | -------------- | -------- | -------------------------------------------------------- |
 | **Researcher** | `web`    | Searches the web for information on the given topic      |
 | **Writer**     | `file`   | Turns research findings into a polished markdown article |
+| **Summarizer** | ``       | Summarizes findings                                      |
 
 ### Handoff
 
